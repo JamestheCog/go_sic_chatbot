@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <!-- Items for the PWA -->
+        <link rel = 'manifest' href = '/manifest.json'>
+        <meta name = 'theme-color' content = '#0d6efd'>
+        <script src = "/sw.js"> </script>
+
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title> Hommy Mommy Appy Chatty </title>
+        <link rel = "stylesheet" href = "/static/css/home/main.css">
+    </head>
+    <body>
+        <div class="home-container">
+        <div class="header">
+            <h1>Welcome</h1>
+            <p>Supporting serious illness conversations with empathy and clarity</p>
+        </div>
+        <div class="auth-link-container">
+            <span>Already have an account? </span>
+            <a href="/login" class="auth-link">Sign in</a>
+        </div>
+
+        <!-- Main Blue Card - Links to New User / New Conversation -->
+        <div class="main-feature">
+            <div class="icon">🤖</div>
+            <div class="content">
+                <h2>Start a New Serious Illness Conversation</h2>
+                <p>Begin a guided discussion about goals of care, values, and preferences.</p>
+            </div>
+            <div class="arrow">››</div>
+        </div>
+
+        <!-- Features Section -->
+        <div class="features-section">
+            <h2>Our Features</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <span class="icon">🗣️</span>
+                    <h3>Serious Illness Conversations (SIC)</h3>
+                    <p>Structured support for discussing diagnosis, prognosis, and care preferences.</p>
+                </div>
+                <div class="feature-card">
+                    <span class="icon">🎯</span>
+                    <h3>Goals of Care</h3>
+                    <p>Clarify what matters most to the patient and align treatment decisions.</p>
+                </div>
+                <div class="feature-card">
+                    <span class="icon">📋</span>
+                    <h3>Advance Care Planning</h3>
+                    <p>Document wishes, values, and surrogate decision-makers.</p>
+                </div>
+                <div class="feature-card">
+                    <span class="icon">❤️</span>
+                    <h3>Emotional Support</h3>
+                    <p>Compassionate guidance through difficult conversations.</p>
+                </div>
+                <div class="feature-card">
+                    <span class="icon">📊</span>
+                    <h3>Shared Decision Making</h3>
+                    <p>Tools to facilitate collaborative healthcare choices.</p>
+                </div>
+                <div class="feature-card">
+                    <span class="icon">🔄</span>
+                    <h3>Conversation History</h3>
+                    <p>Review and continue previous serious illness discussions.</p>
+                </div>
+            </div>
+        </div>
+    </body>
+
+    <script defer src = "/static/js/home/main.js"> </script>
+    <script defer src = "/static/js/shared/theme_toggler.js"> </script>
+    <script defer src = "/static/js/shared/pwa.js"> </script>
+</html>

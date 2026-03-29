@@ -1,0 +1,36 @@
+.chat-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+/* 1. New wrapper for the logo and the title text */
+.chat-header .title-group {
+    display: flex;
+    align-items: center; /* Vertically centers the logo and text */
+    gap: 6px; /* Adds clean space between the logo and the 'Chat Bot' title */
+}
+
+/* 2. Styling the collaborator's logo image */
+.chat-header .app-logo {
+    height: 50px; /* A clean, unobtrusive size */
+    width: auto; /* Maintains the correct aspect ratio */
+    object-fit: contain; /* Ensures the image fits without distorting */
+    background-color: transparent;
+    border-radius: 4px; /* A very subtle curve */
+}
+
+/* 3. Small adjustment to your existing <h2> style (Optional) */
+.chat-header h2 {
+    margin: 0; /* Ensures the title text doesn't have stray margins */
+    font-size: 1.25rem; /* Keeps the professional look */
+    /* Other existing h2 styles */
+}
+
+.chat-header .left-items {
+    display: flex;
+    gap: 10px;
+    align-content: center;
+}

@@ -1,0 +1,122 @@
+/* Container */
+.alert-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;
+    max-width: 380px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+/* Base Alert Style */
+.alert-error, .alert-success {
+    display: flex !important; /* Force flexbox */
+    align-items: center;
+    gap: 15px;
+    padding: 16px 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    border: 1px solid;
+    border-left-width: 6px;
+    animation: fadeIn 0.4s forwards;
+    min-height: 60px; /* Ensures consistency */
+    box-sizing: border-box;
+}
+
+/* Base Icon Style */
+.alert-error::before, .alert-success::before {
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    color: white;
+    border-radius: 50%;
+    font-weight: bold;
+    font-size: 16px;
+    flex-shrink: 0;
+}
+
+/* Success State - FORCING CONTENT */
+.alert-success {
+    background-color: #f0fdf4 !important;
+    border-color: #86efac !important;
+    border-left-color: #22c55e !important;
+    color: #166534 !important;
+}
+
+.alert-success::before {
+    content: "✓" !important; /* The checkmark */
+    background-color: #22c55e;
+}
+
+/* Error State */
+.alert-error {
+    background-color: #fff5f5 !important;
+    border-color: #feb2b2 !important;
+    border-left-color: #e53e3e !important;
+    color: #742a2a !important;
+}
+
+.alert-success .message {
+    margin-top: 1px; /* Nudges it down */
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.alert-error .message {
+    margin-top: 1px; /* Nudges it down */
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.alert-error::before {
+    content: "!" !important;
+    background-color: #e53e3e;
+}
+
+/* Dark Mode Overrides */
+body.dark .alert-success {
+    background-color: #1a2e1f !important;
+    border-color: #166534 !important;
+    color: #86efac !important;
+}
+
+body.dark .alert-error {
+    background-color: #2d1a1a !important;
+    border-color: #9b2c2c !important;
+    color: #fed7d7 !important;
+}
+
+.close-btn {
+    background: transparent !important;
+    border: none !important;
+    font-size: 18px;
+    line-height: 1;
+    cursor: pointer;
+    color: inherit;
+    opacity: 0.4;
+    padding: 10px;
+    transition: opacity 0.2s, transform 0.2s;
+    outline: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.close-btn:hover {
+    opacity: 1;
+    transform: scale(1.1);
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeOut {
+    from { opacity: 1; transform: translateY(0); }        
+    to { opacity: 0; transform: translateY(-10px); }     
+}

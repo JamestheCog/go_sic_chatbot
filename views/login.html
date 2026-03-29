@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <!-- Items for the PWA -->
+        <link rel = 'manifest' href = '/manifest.json'>
+        <meta name = 'theme-color' content = '#0d6efd'>
+        <script src = "/sw.js"> </script>
+        
+        <link rel = "stylesheet" href = "/static/css/login/main.css" />
+        <link rel = "stylesheet" href = "/static/css/shared/alerts.css" />
+    </head>
+    <body>
+        <div class="login-container">
+            <h1>Sign In</h1>
+            <p class="subtitle">Continue facilitating serious illness conversations</p>
+
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" name="username" placeholder="Enter your username">
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" placeholder="Enter your password">
+                </div>
+
+                <button type="submit" class="btn-login">Sign In</button>
+            </form>
+
+            <div class="links">
+                Don't have an account? 
+                <a href="/signup">Create one</a>
+            </div>
+        </div>
+
+        <!-- Alert Container -->
+        <div id="alertContainer" class="alert-container"></div>
+    </body>
+
+    <script defer src = "/static/js/login/main.js"> </script>
+    <script defer src = "/static/js/shared/alerts.js"> </script>
+    <script defer src = "/static/js/shared/theme_toggler.js"> </script>
+    <script defer src = "/static/js/shared/pwa.js"> </script>
+</html>

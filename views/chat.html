@@ -1,0 +1,86 @@
+<!-- 
+
+NOTE: this entire HTML file was stolen off Grok-4-Fast.  As in, I had it generate what Natalie and 
+      pals wanted.
+
+-->
+<html>
+    <!-- Items for the PWA -->
+    <link rel = 'manifest' href = '/manifest.json'>
+    <meta name = 'theme-color' content = '#0d6efd'>
+    <script defer src = "/sw.js"> </script>
+
+    <head>
+        <link rel = "stylesheet" href = "/static/css/chat/main.css"> </link>
+        <link rel = "stylesheet" href = "/static/css/chat/animations.css"> </link>
+        <link rel = "stylesheet" href = "/static/css/chat/wrapper_and_sidebar.css"> </link>
+        <link rel = "stylesheet" href = "/static/css/chat/voice_input.css"> </link>
+        <link rel = "stylesheet" href = "/static/css/chat/header.css"> </link>
+        <link rel = "stylesheet" href = "/static/css/shared/alerts.css"> </link>
+    </head>
+
+    <body>
+        <div class="app-wrapper">
+            <aside class="sidebar" id="sidebar">
+                <div class="sidebar-header">
+                    <button id="newChatBtn" class="new-chat-btn">+ New Chat</button>
+                    <!-- <button id="toggleSidebar" class="toggle-sidebar-btn">☰</button> -->
+                </div>
+
+                <div class="conversation-list" id="conversationList">
+                    <!-- Conversations will be inserted here -->
+                </div>
+
+                <div class="sidebar-footer">
+                    <div class="user-info"> <a href = ''> Logout </a> </div>
+                </div>
+            </aside>
+
+            <!-- Main chat area -->
+            <main class="main-chat" id="mainChat">
+                <div class="chat-container">
+                    <div class="chat-header">
+                        <div class = 'left-items'>
+                            <button id="toggleSidebar" class="toggle-sidebar-btn">☰</button>
+                            <div class = 'title-group'>
+                                <h2> SIC Chatbot </h2>
+                                <img src = '/static/img/logo.png' alt = 'SIC Chatbot Logo' class = 'app-logo'>
+                            </div>
+                        </div>
+                        <div class="header-buttons">
+                            <button class="clear-button">Delete Conversation</button>
+                        <div class="theme-toggle">🌙</div>
+                        </div>
+                    </div>
+
+                    <div class="messages" id="messages"></div>
+                    <div class="typing-indicator" id="typing">
+                        <span></span><span></span><span></span>
+                    </div>
+
+                    <div class="input-area">
+                        <textarea id="userInput" placeholder="Type or speak your message..."></textarea>
+                        <button id="voiceBtn" class="voice-button" title="Hold to speak">...</button>
+                        <input type="file" id="imageInput" accept="image/*" style="display: none;">
+                        <div class="image-preview" id="imagePreview"></div>
+                        <button class="attach-button">📎</button>
+                        <button id="sendButton">Send</button>
+                    </div>
+                </div>
+            </main>
+        </div>
+
+        <!-- Alert container remains -->
+        <div id="alertContainer" class="alert-container"></div>
+    </body>
+
+    <!-- Load in the scripts last -->
+    <script defer src = "/static/js/chat/theme.js"> </script>
+    <script defer src = "/static/js/shared/theme_toggler.js"> </script>
+    <script defer src = "/static/js/chat/main.js"> </script>
+    <script defer src = "/static/js/shared/alerts.js"> </script>
+    <script defer src = "/static/js/chat/sidebar.js"> </script>
+    <script defer src = "/static/js/chat/audio_input.js"> </script>
+    <script defer src = "/static/js/chat/additional_inputs.js"> </script>
+    <script defer src = "/static/js/shared/pwa.js"> </script>
+</html>

@@ -1,0 +1,30 @@
+{
+    "short_name" : "SIC Chat",
+    "name" : "SIC Chatbot",
+    "description" : "An application around a Gemini assistant capable of conducting serious illness conversations with patients' caregivers.",
+    "icons" : [
+        {
+            "src" : "/static/img/512.png",
+            "type" : "image/png",
+            "sizes" : "512x512",
+            "purpose" : "any"
+        },
+        {
+            "src" : "/static/img/192.png",
+            "type" : "image/png",
+            "sizes" : "192x192",
+            "purpose": "any"
+        },
+        {
+            "src" : "/static/img/maskable-512.png",
+            "type" : "image/png",
+            "sizes" : "512x512",
+            "purpose": "maskable"
+        }
+    ],
+    "start_url" : "/",
+    "background_color" : "#121212",
+    "display" : "standalone",
+    "scope" : "/",
+    "theme_color" : "#0d6efd"
+}
