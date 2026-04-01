@@ -3,7 +3,7 @@
 
 const FORM = document.querySelector('#newUserForm');
 const LOGIN_REDIRECT = 2500;
-const CHAT_HANDLER = '/chat';
+const CHAT_HANDLER = '/login';
 
 (function() {
     let pref = localStorage.getItem('nightModeOn');
