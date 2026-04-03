@@ -6,9 +6,9 @@ const CACHE_NAME = 'sic_chatbot';
 const ITEMS_TO_CACHE = [
     // Essential items to cache first:
     '/', 
+    '/offline',
     "/manifest.json",
 
-    
     // Logos:
     '/static/img/maskable-512.png',
     '/static/img/192.png',
@@ -52,11 +52,21 @@ self.addEventListener('install', (e) => {
 // Activation event:
 self.addEventListener('activate', (e) => {
     console.log('Service worker activated.');
-    event.waitUntil(clients.claim()); 
+    e.waitUntil(clients.claim()); 
 });
 
 // Fetch event for offline UI:
 self.addEventListener('fetch', (e) => {
+    if (e.request.mode == 'navigate') {
+        e.respondWith(
+            fetch(e.request)
+            .catch(() => {
+                return caches.match('/offline')
+            })
+        );
+        return
+    }
+
     e.respondWith(
         caches.match(e.request).then(response => {
             return response || fetch(e.request);
