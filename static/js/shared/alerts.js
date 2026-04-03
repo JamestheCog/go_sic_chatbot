@@ -14,6 +14,9 @@ let showSuccess = (msg, shouldAutoClose = true) => {
     `;
     alertDiv.querySelector('.close-btn').addEventListener('click', () => {dismissAlert(alertDiv)});
     ALERT_CONTAINER.appendChild(alertDiv);
+    if (ALERT_CONTAINER.children.length > 2) {
+        dismissAlert(ALERT_CONTAINER.children[0]);
+    }
     if (shouldAutoClose) {
         setTimeout(() => {dismissAlert(alertDiv)}, TIMEOUT_DURATION);
     }
@@ -31,6 +34,9 @@ let showError = (msg, shouldAutoClose = true) => {
     `
     errorDiv.querySelector('.close-btn').addEventListener('click', () => {dismissAlert(errorDiv)});
     ALERT_CONTAINER.appendChild(errorDiv);
+    if (ALERT_CONTAINER.children.length > 2) {
+        dismissAlert(ALERT_CONTAINER.children[0]);
+    }
     if (shouldAutoClose) {
         setTimeout(() => {dismissAlert(errorDiv)}, TIMEOUT_DURATION);
     }
