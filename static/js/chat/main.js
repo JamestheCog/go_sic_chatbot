@@ -62,7 +62,7 @@ async function fetchResponse(msg, imgB64 = '', imgMimeType = '') {
     if (!msg || !msg.trim() || typeof(msg) !== 'string') return;
     let conversationID = localStorage.getItem(CURRENT_ID_KEY);
     if (!conversationID) {
-        showError('Why is there no conversation ID?  WHY!?');
+        showError(`There's no conversation ID in the backend - could you refresh the application?`);
         return;
     }
     
@@ -172,6 +172,7 @@ async function chat() {
                 localStorage.setItem(CURRENT_ID_KEY, '');
             }
             CHATBOX.value = msg;
+            enableInputs();
         }
     } catch(error) {
         showError(`The application's gone bonkers, yo (error: ${error})!`);
