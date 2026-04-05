@@ -10,7 +10,7 @@ let isRecording = false;
 // a SpeechRecognition object.  Otherwise, hide the mic. button.
 //
 // Note that this functionality only functions for English FOR NOW:
-if ('SpeechRecognition' in window || 'webkitSpechRecoginition' in window) {
+if ('SpeechRecognition' in window || 'webkitSpeechRecoginition' in window) {
     const SPEECH_RECOGNITION = window.SpeechRecognition || window.webkitSpechRecoginition;
     recognition = new SPEECH_RECOGNITION();
     recognition.continuous = false;
@@ -23,13 +23,14 @@ if ('SpeechRecognition' in window || 'webkitSpechRecoginition' in window) {
             transcript += e.results[i][0].transcript;
         }
         CHATBOX.value = transcript;
+        CHATBOX.dispatchEvent(new Event('input'));
     }
 
     recognition.onerror = (e) => {
         console.error(`Error while recording speech: ${e}`);
         stopRecording();
         // alert here:
-        showErrorAlert(e);
+        showError(e);
     }
 
     recognition.onend = () => {
@@ -60,7 +61,6 @@ let stopRecording = () => {
 
 
 // --- Functionality for recording ---
-let holdTimeout;
 VOICE_BUTTON.addEventListener('mousedown', startRecording);
 VOICE_BUTTON.addEventListener('touchstart', (e) => {
     e.preventDefault();
