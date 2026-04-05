@@ -12,8 +12,7 @@ import (
 // Basicallt the inverse of the DecryptFile function - it encodes stuff.
 // I don't know why we'd need it, but it's better to have and not need than to
 // need and not have if you ask me:
-func EncryptString(plainText, key string) (string, error) {
-	plainBytes := []byte(plainText)
+func EncryptString(plainBytes []byte, key string) (string, error) {
 	byteKey, err := hex.DecodeString(key)
 	if err != nil {
 		return "", err

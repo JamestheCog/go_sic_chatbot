@@ -1,5 +1,4 @@
 // A file I came up with to store decryption-related helper functions and / or constants.
-
 package utils
 
 import (
@@ -8,9 +7,27 @@ import (
 	"encoding/base64"
 	"encoding/hex"
 	"fmt"
+	"os"
 )
 
-// Given a piece of cipher text as a plain string and an AES-GCM key
+// A wrapper function around DecryptString - basically calls os.ReadFile on filePath
+// prior to calling DecryptString on it.
+func LoadFile(filePath, hexKey string) (string, error) {
+	plainBytes, err := os.ReadFile(filePath)
+	if err != nil {
+		return "", err
+	}
+	plainText := string(plainBytes)
+
+	if res, err := DecryptString(plainText, hexKey); err != nil {
+		return "", err
+	} else {
+		return res, nil
+	}
+}
+
+// Given a piece of cipher text as a plain string and an AES-GCM key, decrypt the cipher text
+// and return the plain text.
 func DecryptString(cipherText string, key string) (string, error) {
 	cipherBytes, err := fetchB64Encoding(cipherText)
 	if err != nil {
