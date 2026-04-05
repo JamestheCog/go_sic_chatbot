@@ -10,6 +10,7 @@ import "net/http"
 const (
 	manifestPath = "./manifest.json"
 	swPath       = "./sw.js"
+	faviconPath  = "./static/img/logo.png"
 )
 
 // --- End ---
@@ -28,4 +29,12 @@ func (a *App) serveServiceWorker(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/javascript")
 	w.Header().Set("X-Content-Type-Options", "nosniff")
 	http.ServeFile(w, r, swPath)
+}
+
+// The handler of interest that's going to be responsible for serving
+// our favicon.ico file.  I'm just gonna re-use Dr. Natalie's icons
+// for this - the one from her presentation slides:
+func (a *App) faviconHandler(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "image/x-icon")
+	http.ServeFile(w, r, faviconPath)
 }
