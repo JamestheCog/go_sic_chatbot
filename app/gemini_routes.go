@@ -44,7 +44,7 @@ type ChatItem struct {
 // throw.
 func (a *App) messageHandler(w http.ResponseWriter, r *http.Request) (any, int, error) {
 	if r.Method != http.MethodPost {
-		return nil, http.StatusMethodNotAllowed, fmt.Errorf("Only POSTs be allowed here, dude.")
+		return nil, http.StatusMethodNotAllowed, fmt.Errorf("Only POSTs be allowed here.")
 	}
 
 	val := r.Context().Value(cookieName)
@@ -72,7 +72,7 @@ func (a *App) messageHandler(w http.ResponseWriter, r *http.Request) (any, int, 
 	if err != nil {
 		return nil, http.StatusInternalServerError, err
 	}
-	geminiMsg, err := a.fetchResponse(msgHistory, numTries, r.Context())
+	geminiMsg, err := a.fetchResponse(msgHistory, numTries, r.Context(), a.GeminiKeys, a.ConversationPrompt)
 	if err != nil {
 		return nil, http.StatusInternalServerError, err
 	}
