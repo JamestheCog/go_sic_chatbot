@@ -8,7 +8,7 @@ const NEW_CONVO = document.querySelector('.new-chat-btn');
 const CURRENT_ID_KEY = 'current_conversation_id';
 const MAIN_CHAT = document.querySelector('.main-chat');
 const LOGOUT = document.querySelector('.user-info');
-const LOGOUT_DELAY = 8e3;
+const LOGOUT_DELAY = 4e3;
 
 
 // -- Functions for sidebar item management -- 
@@ -23,7 +23,7 @@ let createSnippet = (snippetInfo) => {
     let snippetDiv = document.createElement('div');
     snippetDiv.className = 'conversation-item';
     snippetDiv.dataset.conversationId = snippetInfo.conversation_id;
-    snippetDiv.innerText = snippetInfo.date_sent;
+    snippetDiv.innerText = prettifyDate(snippetInfo.date_sent);
     snippetDiv.addEventListener('click', async () => {
         let currentID = snippetDiv.dataset.conversationId;
         let storedID = localStorage.getItem(CURRENT_ID_KEY);
@@ -49,6 +49,27 @@ let createSnippet = (snippetInfo) => {
         messages.data.forEach(msg => addMessage(msg['message'], msg['role'], msg['img_b64'], msg['img_mimetype']));
     })
     return snippetDiv;
+}
+
+// Given a date fetched from the SQLitecloud backend, format it into something nicer - like:
+// Today, <time> or Sat, Apr 4, 2026 at <time>:
+let prettifyDate = (dateString) => {
+    const DAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thurs', 'Fri', 'Sat'];
+    const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    let currentDate = new Date();
+    let fetchedDate = new Date(dateString.trim().replace(' ', 'T') + 'Z');
+    let hour = fetchedDate.getHours() > 12 ? fetchedDate.getHours() - 12 : fetchedDate.getHours();
+    let minute = fetchedDate.getMinutes() < 10 ? `0${fetchedDate.getMinutes()}` : fetchedDate.getMinutes();
+    let amSetting = fetchedDate.getHours() >= 12 ? 'PM' : 'AM';
+    let time = `${hour}:${minute} ${amSetting}`;
+    let result;
+
+    if (currentDate === fetchedDate) {
+        result = `Today at ${time}`;
+    } else {
+        result = `${DAYS[fetchedDate.getDay()]}, ${MONTHS[fetchedDate.getMonth()]} ${fetchedDate.getDate()} at ${time}`;
+    }
+    return result;
 }
 
 // A function that actually loads the snippets of interest into 
