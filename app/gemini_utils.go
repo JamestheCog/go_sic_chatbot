@@ -2,15 +2,10 @@ package app
 
 import (
 	"context"
-	"crypto/aes"
-	"crypto/cipher"
-	"encoding/base64"
-	"encoding/hex"
 	"fmt"
 	"log"
 	"math"
 	"math/rand"
-	"os"
 	"strings"
 	"time"
 
@@ -26,78 +21,42 @@ const (
 
 // --- END ---
 
-// Fetches the prompt that we're going to be using to make the bot behave as is (i.e.,
-// the very same prompt we passed off to Dylan on the SUTD's side of things).
-func (a *App) decryptFileToText(filePath string) (string, error) {
-	ciphertextB64, err := os.ReadFile(filePath)
-	if err != nil {
-		return "", fmt.Errorf("failed to read file: %v", err)
-	}
-
-	cleanB64 := strings.TrimSpace(string(ciphertextB64))
-	cipherBytes, err := base64.StdEncoding.DecodeString(cleanB64)
-	if err != nil {
-		return "", fmt.Errorf("failed to decode base64: %w", err)
-	}
-	byteKey, err := hex.DecodeString(a.AesKey)
-	if err != nil {
-		return "", fmt.Errorf("invalid hex key: %w", err)
-	}
-	block, err := aes.NewCipher(byteKey)
-	if err != nil {
-		return "", err
-	}
-	gcm, err := cipher.NewGCM(block)
-	if err != nil {
-		return "", err
-	}
-
-	nonceSize := gcm.NonceSize()
-	if len(cipherBytes) < nonceSize {
-		return "", fmt.Errorf("ciphertext too short")
-	}
-
-	nonce, actualCiphertext := cipherBytes[:nonceSize], cipherBytes[nonceSize:]
-	plainBytes, err := gcm.Open(nil, nonce, actualCiphertext, nil)
-	if err != nil {
-		return "", fmt.Errorf("decryption failed (check your key): %w", err)
-	}
-	return string(plainBytes), nil
-}
-
-func (a *App) createContentConfig(filePath string) (*genai.GenerateContentConfig, error) {
-	decryptedPrompt, err := a.decryptFileToText(filePath)
-	if err != nil {
-		return nil, err
-	}
-
-	return &genai.GenerateContentConfig{
+func (a *App) fetchResponse(history []*genai.Content, numRetries int, ctx context.Context, tokens []string, prompt string) (string, error) {
+	contentConfig := &genai.GenerateContentConfig{
 		MaxOutputTokens:   tokenLimit,
-		SystemInstruction: genai.NewContentFromText(decryptedPrompt, genai.RoleUser),
-	}, nil
-}
-
-// The helper function of interest that tries to - given a history - fetch Gemini's response.
-func (a *App) fetchResponse(history []*genai.Content, numRetries int, ctx context.Context) (string, error) {
-	for i := 0; i < numRetries; i++ {
-		response, err := a.GeminiClient.Models.GenerateContent(
-			ctx, modelName,
-			history, a.ContentConfig,
-		)
-
-		if err != nil {
-			if strings.Contains(err.Error(), "429") {
-				return "", fmt.Errorf("Kevin, we've a problem.  The token has called for MSW's services!")
-			} else if strings.Contains(err.Error(), "503") {
-				delayDuration := math.Pow(float64(baseDelay), float64(i+1))
-				log.Printf("Gemini's too busy right now - waiting %.2f seconds before trying again (attempt #%d out of %d)...",
-					delayDuration, i+1, numRetries)
-				time.Sleep(time.Duration(delayDuration+(rand.Float64()*delayDuration)) * time.Second)
-				continue
-			}
-			return "", fmt.Errorf("Gemini is too busy right now; try again later perhaps?")
-		}
-		return response.Text(), nil
+		SystemInstruction: genai.NewContentFromText(prompt, genai.RoleUser),
 	}
-	return "", fmt.Errorf("Could not fetch any responses from Gemini for some reason.")
+
+	for i, token := range tokens {
+		clientObj, err := genai.NewClient(ctx, &genai.ClientConfig{APIKey: token})
+		if err != nil {
+			return "", err
+		}
+		for j := 0; j < numRetries; j++ {
+			response, err := clientObj.Models.GenerateContent(
+				ctx, modelName, history, contentConfig,
+			)
+			if err != nil {
+				if strings.Contains(err.Error(), "503") {
+					if j == (numRetries - 1) {
+						return "", fmt.Errorf("Gemini is currently swamped; try again later.")
+					}
+					log.Printf("Error 503 encountered; backing off before trying again (attempt #%d)...", j+1)
+					delayDuration := math.Pow(float64(baseDelay), float64(j+1)) + (rand.Float64() * baseDelay)
+					time.Sleep(time.Duration(delayDuration) * time.Second)
+					continue
+				} else if strings.Contains(err.Error(), "429") {
+					if i < len(tokens) {
+						log.Printf("Token %d is exhausted; switching to token %d now...\n", i+1, i+2)
+					}
+					break
+				} else {
+					return "", fmt.Errorf("Could not fetch Gemini's response for the following reason: %v", err)
+				}
+			} else {
+				return response.Text(), nil
+			}
+		}
+	}
+	return "", fmt.Errorf("All tokens have been exhausted.")
 }
