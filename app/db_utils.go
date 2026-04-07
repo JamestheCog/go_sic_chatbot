@@ -66,7 +66,7 @@ func (a *App) fetchConversationHistory(connID, sessionID string) ([]*genai.Conte
 func (a *App) uploadMessage(messageItems any, connID, sessionID string) error {
 	var valArray []any
 	const uploadStatement = "INSERT INTO conversations VALUES (?, ?, ?, ?, ?, ?, ?);"
-	timeToday := time.Now().Format("2006-01-02 15:04:03")
+	timeToday := time.Now().Format("2006-01-02 15:03:04")
 
 	switch v := messageItems.(type) {
 	case MsgPayload:
