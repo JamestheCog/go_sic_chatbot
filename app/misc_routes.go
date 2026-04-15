@@ -4,11 +4,13 @@
 package app
 
 import (
-	"fmt"
+	"math/rand"
 	"net/http"
+	"time"
 )
 
-// --- Constants and structs for dying ---
+// --- Constants and structs for the routes ---
+const numSQLQueries = 3
 
 // What we're going to be sending to the middleware to return to
 // the front-end (i.e., JavaScript):
@@ -32,9 +34,12 @@ func (a *App) wakeDB(w http.ResponseWriter, r *http.Request) (any, int, error) {
 	const wakeupStatement = "SELECT message, role FROM conversations LIMIT 10;"
 	awakener := SimpleResponse{}
 
-	if err := a.DbClient.Execute(wakeupStatement); err != nil {
-		awakener.Message = "DB too tired cannot wake up :("
-		return awakener, http.StatusInternalServerError, fmt.Errorf("DB no waky waky.")
+	for i := 0; i < numSQLQueries; i++ {
+		if _, err := a.DbClient.Select(wakeupStatement); err != nil {
+			awakener.Message = "DB too tired cannot wake up :("
+			return awakener, http.StatusInternalServerError, err
+		}
+		time.Sleep(time.Duration(numTries+(numTries*rand.Float64())) * time.Second)
 	}
 	awakener.Message = "DB now awake - happy?"
 	return awakener, http.StatusOK, nil
