@@ -2,10 +2,10 @@ package app
 
 import (
 	"context"
-	"fmt"
 	"net/http"
 	"os"
 	"strings"
+	"time"
 
 	"github.com/gorilla/sessions"
 	"github.com/jamesthecog/go_chatbot/utils"
@@ -33,41 +33,44 @@ const (
 // it mainly ensures that our Gemini client and dbConnection strings are in place.
 func InitializeApp(ctx context.Context) (*App, error) {
 	app := &App{}
-	dbConnString := os.Getenv("SQLITECLOUD_CONNECTION_STRING")
-	aesKey := os.Getenv("AES_KEY")
-	appSecret := os.Getenv("APP_SECRET")
-	if dbConnString == "" {
-		return nil, fmt.Errorf("null value for `SQLITECLOUD_CONNECTION_STRING`.")
-	}
-	if aesKey == "" {
-		return nil, fmt.Errorf("null value for `AES_KEY`.")
-	}
-	if appSecret == "" {
-		return nil, fmt.Errorf("null value for `APP_SECRET`.")
-	}
+	throttler := time.NewTicker(500 * time.Millisecond)
+	defer throttler.Stop()
 
-	app.AesKey = aesKey
-	dbClient, err := sqlitecloud.Connect(dbConnString)
-	if err != nil {
-		dbClient.Close()
-		return nil, err
-	}
-	conversationPrompt, err := utils.LoadFile(promptPath, aesKey)
-	if err != nil {
-		return nil, err
-	}
-	geminiKeys, err := fetchGeminiKeys(geminiKeyPath, aesKey)
-	if err != nil {
-		return nil, err
-	}
-	cookieStore := sessions.NewCookieStore([]byte(appSecret))
+	for {
+		select {
+		case <-ctx.Done():
+			return nil, ctx.Err()
+		case <-throttler.C:
+			dbConnString := os.Getenv("SQLITECLOUD_CONNECTION_STRING")
+			aesKey := os.Getenv("AES_KEY")
+			appSecret := os.Getenv("APP_SECRET")
+			if dbConnString == "" || aesKey == "" || appSecret == "" {
+				continue
+			}
 
-	// Assign values to the app object here:
-	app.DbClient = dbClient
-	app.ConversationPrompt = conversationPrompt
-	app.Cookie = cookieStore
-	app.GeminiKeys = geminiKeys
-	return app, nil
+			// Fetch more critical secrets here:
+			dbClient, err := sqlitecloud.Connect(dbConnString)
+			if err != nil {
+				return nil, err
+			}
+			conversationPrompt, err := utils.LoadFile(promptPath, aesKey)
+			if err != nil {
+				return nil, err
+			}
+			geminiKeys, err := fetchGeminiKeys(geminiKeyPath, aesKey)
+			if err != nil {
+				return nil, err
+			}
+			cookieStore := sessions.NewCookieStore([]byte(appSecret))
+
+			// Then, actually store the variables in our
+			app.DbClient = dbClient
+			app.ConversationPrompt = conversationPrompt
+			app.Cookie = cookieStore
+			app.GeminiKeys = geminiKeys
+			return app, nil
+		}
+	}
 }
 
 // Given a file path and a hex key, return the file's decrypted contents
